@@ -12,6 +12,7 @@ set(Boost_USE_MULTITHREADED ON)
 find_package( EXPAT )
 find_package( LibXml2 )
 
+add_subdirectory(uri)
 add_subdirectory(http)
 
 if (Boost_FOUND)
@@ -19,7 +20,6 @@ if (Boost_FOUND)
         TESTS
         message_test
         message_transform_test
-        url_test
         utils_thread_pool
         )
     foreach (test ${TESTS})
