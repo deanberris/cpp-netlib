@@ -12,6 +12,7 @@ set(Boost_USE_MULTITHREADED ON)
 find_package( EXPAT )
 find_package( LibXml2 )
 
+add_subdirectory(uri)
 add_subdirectory(http)
 
 if (Boost_FOUND)
@@ -19,14 +20,16 @@ if (Boost_FOUND)
         TESTS
         message_test
         message_transform_test
-        url_test
         utils_thread_pool
         )
     foreach (test ${TESTS})
         set_source_files_properties(${test}.cpp
             PROPERTIES COMPILE_FLAGS "-Wall")
         add_executable(cpp-netlib-${test} ${test}.cpp)
-        add_dependencies(cpp-netlib-${test} cppnetlib-uri-parsers)
+	add_dependencies(cpp-netlib-${test} cppnetlib-uri-parsers)
+
+        # add_dependencies(cpp-netlib-${test} cppnetlib-uri-parsers)
+        # target_link_libraries(cpp-netlib-${test} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} cppnetlib-uri-parsers)
         target_link_libraries(cpp-netlib-${test} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} cppnetlib-uri-parsers)
         if (OPENSSL_FOUND)
             target_link_libraries(cpp-netlib-${test} ${OPENSSL_LIBRARIES})

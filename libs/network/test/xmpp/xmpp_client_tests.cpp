@@ -39,5 +39,5 @@ BOOST_AUTO_TEST_CASE(test_client_connection) {
     test_handler handler;
     client instance(handler);
     //instance.connect("glyn@lola", "xxx");
-    instance.run();
+    //instance.run();
 }
