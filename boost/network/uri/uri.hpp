@@ -193,6 +193,19 @@ public:
         return is_valid_;
     }
 
+    void append(const string_type &data) {
+        uri_.append(data);
+        parse();
+    }
+
+    template <
+        class Iterator
+        >
+    void append(Iterator first, Iterator last) {
+        uri_.append(first, last);
+        parse();
+    }
+
 private:
 
     void parse();
@@ -322,6 +335,14 @@ typename basic_uri<Tag>::string_type authority(const basic_uri<Tag> &uri) {
     typename basic_uri<Tag>::const_range_type user_info(uri.user_info_range());
     typename basic_uri<Tag>::const_range_type port(uri.port_range());
     return typename basic_uri<Tag>::string_type(user_info.begin(), port.end());
+}
+
+template <
+    class Tag
+    >
+inline
+typename basic_uri<Tag>::string_type netloc(const basic_uri<Tag> &uri) {
+    return authority(uri);
 }
 
 template <
