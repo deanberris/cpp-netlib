@@ -6,15 +6,13 @@
 #include <string>
 #include <sstream>
 
-#define BOOST_TEST_MODULE logging log_record
-#include <boost/config/warning_disable.hpp>
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include <network/logging/logging.hpp>
 
 using namespace network::logging;
 
-BOOST_AUTO_TEST_CASE(custom_log_handler_output) {
+TEST(logging_custom_handler, custom_log_handler_output) {
   
   std::stringstream log_output;
   auto custom_log_handler = [&]( const log_record& log )
@@ -32,6 +30,6 @@ BOOST_AUTO_TEST_CASE(custom_log_handler_output) {
 
   const auto result_output = log_output.str();
 
-  BOOST_CHECK( !result_output.empty() );
-  BOOST_CHECK( result_output == "[CPPNETLIB]<somewhere.cpp:42> " + message );
+  ASSERT_TRUE( !result_output.empty() );
+  ASSERT_TRUE( result_output == "[CPPNETLIB]<somewhere.cpp:42> " + message );
 }

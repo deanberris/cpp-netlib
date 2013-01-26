@@ -4,11 +4,12 @@
 #  (See accompanying file LICENSE_1_0.txt or copy at
 #   http://www.boost.org/LICENSE_1_0.txt)
 
+include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(${CPP-NETLIB_SOURCE_DIR}/uri/src)
 include_directories(${CPP-NETLIB_SOURCE_DIR}/message/src)
 include_directories(${CPP-NETLIB_SOURCE_DIR}/logging/src)
 
-if (Boost_FOUND)
+if (CPP-NETLIB_BUILD_TESTS)
   set(
     TESTS
     logging_log_record
@@ -22,10 +23,10 @@ if (Boost_FOUND)
     add_executable(cpp-netlib-${test} ${test}.cpp)
     add_dependencies(cpp-netlib-${test} cppnetlib-logging)
     target_link_libraries(cpp-netlib-${test}
-      ${Boost_LIBRARIES} cppnetlib-logging)
+      ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES} cppnetlib-logging)
     set_target_properties(cpp-netlib-${test}
       PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CPP-NETLIB_BINARY_DIR}/tests)
     add_test(cpp-netlib-${test}
       ${CPP-NETLIB_BINARY_DIR}/tests/cpp-netlib-${test})
   endforeach (test)
-endif()
+endif (CPP-NETLIB_BUILD_TESTS)
