@@ -1,7 +1,7 @@
 # Copyright (c) Glyn Matthews 2011, 2012, 2013.
-# Copyright 2011 Dean Michael Berris (dberris@google.com)
+# Copyright 2014 Dean Michael Berris (dberris@google.com)
 # Copyright 2012 A. Joel Lamotte (mjklaim@gmail.com)
-# Copyright 2011 Google, Inc.
+# Copyright 2014 Google, Inc.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
@@ -67,6 +67,11 @@ target_link_libraries(network-http-v2-client
 if (OPENSSL_FOUND)
   target_link_libraries(network-http-v2-client ${OPENSSL_LIBRARIES})
 endif()
+
+# HTTP server
+set (CPP-NETLIB_HTTP_V2_SERVER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/server/server.cpp)
+add_library(network-http-v2-server ${CPP-NETLIB_HTTP_V2_SERVER_SRCS})
+target_link_libraries(network-http-v2-server ${Boost_LIBRARIES})
 
 # prepend current directory to make paths absolute
 prependToElements( "${CMAKE_CURRENT_SOURCE_DIR}/"
