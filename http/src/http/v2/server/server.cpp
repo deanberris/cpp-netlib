@@ -10,8 +10,6 @@ namespace network {
 namespace http {
 namespace v2 {
 
-server::server() {}
-
 server::~server() {}
 
 }  // namespace v2

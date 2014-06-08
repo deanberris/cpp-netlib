@@ -17,6 +17,10 @@ Describe(http_server) {
     http::server server;
     static_cast<void>(server);
   }
+  It(constructs_with_more_options) {
+    http::server server{http::server::options{}};
+    static_cast<void>(server);
+  }
 };
 
 int main(int argc, char* argv[]) {

@@ -15,8 +15,19 @@ namespace v2 {
  */
 class server {
  public:
-  server();
+  /** These are the options supported by the server at construction time.
+   */
+  struct options {};
+
+  /// A server is default-constructible.
+  server() = default;
+
+  /// A server can take an rvalue reference to a set of options.
+  server(options&& provided_options) : options_(provided_options) {}
+
   ~server();
+ private:
+  options options_;
 };
 
 }  // namespace v2
