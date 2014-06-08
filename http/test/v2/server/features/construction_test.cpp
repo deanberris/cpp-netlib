@@ -12,14 +12,36 @@
 using namespace igloo;
 namespace http = network::http::v2;
 
-Describe(http_server) {
-  It(constructs_with_default_options) {
+Describe(HttpServer) {
+  It(ConstructsWithDefaultOptions) {
     http::server server;
     static_cast<void>(server);
   }
-  It(constructs_with_more_options) {
+  It(ConstructsWithNonDefaultEmptyOptions) {
     http::server server{http::server::options{}};
     static_cast<void>(server);
+  }
+  It(ConstructsWithSimpleOptions) {
+    http::server server{
+      http::server::options{}.port(80)
+    };
+    static_cast<void>(server);
+  }
+};
+
+Describe(HttpServerWithDynamicPolicies) {
+  It(SupportsCustomHandlers) {
+    class custom_handler : public http::request_handler_base {
+     public:
+      void register_handler(
+	  boost::string_ref, http::request_handler_base::handler) override {
+	// do nothing
+      }
+      virtual ~custom_handler() {}
+    };
+    http::server::options options;
+    options.handler(std::make_shared<custom_handler>());
+    http::server server{std::move(options)};
   }
 };
 

@@ -69,7 +69,11 @@ if (OPENSSL_FOUND)
 endif()
 
 # HTTP server
-set (CPP-NETLIB_HTTP_V2_SERVER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/server/server.cpp)
+set (CPP-NETLIB_HTTP_V2_SERVER_SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/server/server.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/server/dynamic_dispatcher.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/http/v2/server/handler_base.cpp
+  )
 add_library(network-http-v2-server ${CPP-NETLIB_HTTP_V2_SERVER_SRCS})
 target_link_libraries(network-http-v2-server ${Boost_LIBRARIES})
 
