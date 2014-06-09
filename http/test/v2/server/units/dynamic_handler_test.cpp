@@ -14,7 +14,7 @@ class CustomRequestHandler : public http::request_handler_base {
   void register_handler(boost::string_ref path, handler some_handler) override {
     // Do nothing here.
   };
-  ~CustomRequestHandler();
+  ~CustomRequestHandler() {}
 };
 
 TEST(RequestHandlerTest, ConstructorTest) {
