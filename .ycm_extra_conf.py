@@ -31,9 +31,9 @@ flags = [
     '-I',
     './deps/igloo',
     '-I',
-    './deps/gmock',
+    './deps/gmock/include',
     '-I',
-    './deps/gtest',
+    './deps/gtest/include',
     # Always enable debugging for the project when building for semantic
     # completion.
     '-DBOOST_NETWORK_DEBUG',
