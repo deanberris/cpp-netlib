@@ -41,6 +41,7 @@ if (Boost_FOUND)
         client_get_different_port_test
         client_get_timeout_test
         client_get_streaming_test
+	message_async_ready_test
         )
     foreach ( test ${TESTS} )
         add_executable(cpp-netlib-http-${test} ${test}.cpp)

@@ -12,6 +12,8 @@
 #include <boost/thread/future.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/optional.hpp>
+#include <boost/network/traits/string.hpp>
+#include <boost/network/traits/headers_container.hpp>
 
 //FIXME move this out to a trait
 #include <set>
@@ -24,6 +26,9 @@ namespace boost { namespace network { namespace http {
 
         template <class Tag>
         struct ready_wrapper;
+
+	template <class Tag, class Callback>
+	struct when_ready_wrapper;
 
     } /* impl */
 
@@ -152,6 +157,8 @@ namespace boost { namespace network { namespace http {
         mutable boost::optional<headers_container_type> retrieved_headers_;
 
         friend struct boost::network::http::impl::ready_wrapper<Tag>;
+	template <class, class> friend struct
+	    boost::network::http::impl::when_ready_wrapper;
     };
 
     template <class Tag>
