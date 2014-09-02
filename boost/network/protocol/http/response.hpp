@@ -1,8 +1,9 @@
-//          Copyright Dean Michael Berris 2007.
-//          Copyright Michael Dickey 2008.
+// Copyright 2007, 2014 Dean Michael Berris <dberris@google.com>.
+// Copyright 2008 Michael Dickey.
+// Copyright 2014 Google, Inc.
 // Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_NETWORK_PROTOCOL_HTTP_RESPONSE_HPP
 #define BOOST_NETWORK_PROTOCOL_HTTP_RESPONSE_HPP
@@ -31,6 +32,9 @@
 #include <boost/network/protocol/http/message/wrappers/destination.hpp>
 #include <boost/network/protocol/http/message/wrappers/source.hpp>
 #include <boost/network/protocol/http/message/wrappers/ready.hpp>
+#ifdef BOOST_NETWORK_ENABLE_WHEN_READY
+#include <boost/network/protocol/http/message/wrappers/when_ready.hpp>
+#endif  // BOOST_NETWORK_ENABLE_WHEN_READY
 
 #include <boost/network/protocol/http/message.hpp>
 #include <boost/network/protocol/http/message/async_message.hpp>

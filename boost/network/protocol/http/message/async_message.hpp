@@ -12,6 +12,8 @@
 #include <boost/thread/future.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/optional.hpp>
+#include <boost/network/traits/string.hpp>
+#include <boost/network/traits/headers_container.hpp>
 
 // FIXME move this out to a trait
 #include <set>
