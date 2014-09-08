@@ -144,6 +144,11 @@ struct async_message {
   mutable boost::optional<headers_container_type> retrieved_headers_;
 
   friend struct boost::network::http::impl::ready_wrapper<Tag>;
+
+#ifdef BOOST_NETWORK_ENABLE_WHEN_READY
+  template <class, class>
+  friend struct boost::network::http::impl::when_ready_wrapper;
+#endif
 };
 
 template <class Tag>
