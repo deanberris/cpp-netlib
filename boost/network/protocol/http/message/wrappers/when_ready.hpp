@@ -21,7 +21,8 @@ namespace network {
 namespace http {
 
 // Forward decl for async_message.
-template <class Tag> struct async_message;
+template <class Tag>
+struct async_message;
 
 namespace impl {
 
@@ -34,9 +35,7 @@ struct when_ready_wrapper :
   typedef typename string<Tag>::type string_type;
 
   when_ready_wrapper(async_message<Tag> const& message, Callback callback)
-      : wrapper_base(message),
-	message_(message),
-	callback_(callback) {}
+      : wrapper_base(message), message_(message), callback_(callback) {}
 
   async_message<Tag> message_;
   Callback callback_;

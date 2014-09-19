@@ -9,27 +9,32 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/network/version.hpp>
-#include <boost/network/detail/debug.hpp>
-#include <boost/thread/future.hpp>
-#include <boost/throw_exception.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/range/algorithm/transform.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/network/constants.hpp>
-#include <boost/network/traits/ostream_iterator.hpp>
-#include <boost/network/traits/istream.hpp>
-#include <boost/logic/tribool.hpp>
-#include <boost/network/protocol/http/parser/incremental.hpp>
-#include <boost/network/protocol/http/message/wrappers/uri.hpp>
-#include <boost/network/protocol/http/client/connection/async_protocol_handler.hpp>
-#include <boost/network/protocol/http/algorithms/linearize.hpp>
-#include <boost/array.hpp>
-#include <boost/assert.hpp>
-#include <boost/bind/protect.hpp>
 #include <iterator>
 
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/array.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/placeholders.hpp>
+#include <boost/asio/strand.hpp>
+#include <boost/asio/streambuf.hpp>
+#include <boost/assert.hpp>
+#include <boost/bind/protect.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/logic/tribool.hpp>
+#include <boost/network/constants.hpp>
+#include <boost/network/detail/debug.hpp>
+#include <boost/network/protocol/http/algorithms/linearize.hpp>
+#include <boost/network/protocol/http/client/connection/async_protocol_handler.hpp>
+#include <boost/network/protocol/http/message/wrappers/uri.hpp>
+#include <boost/network/protocol/http/parser/incremental.hpp>
 #include <boost/network/protocol/http/traits/delegate_factory.hpp>
+#include <boost/network/traits/istream.hpp>
+#include <boost/network/traits/ostream_iterator.hpp>
+#include <boost/network/version.hpp>
+#include <boost/range/algorithm/transform.hpp>
+#include <boost/thread/future.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace boost {
 namespace network {
@@ -79,16 +84,14 @@ struct http_async_connection
         request_strand_(resolver.get_io_service()),
         delegate_(delegate) {}
 
-  // This is the main entry point for the connection/request pipeline.
-  // We're
-  // overriding async_connection_base<...>::start(...) here which is
-  // called
-  // by the client.
+  // This is the main entry point for the connection/request pipeline.  We're
+  // overriding async_connection_base<...>::start(...) here which is called by
+  // the client.
   virtual response start(request const& request, string_type const& method,
                          bool get_body, body_callback_function_type callback,
                          body_generator_function_type generator) {
     response response_;
-    this->init_response(response_, get_body);
+    this->init_response(response_);
     linearize(request, method, version_major, version_minor,
               std::ostreambuf_iterator<typename char_<Tag>::type>(
                   &command_streambuf));
@@ -134,8 +137,7 @@ struct http_async_connection
                        boost::system::error_code const& ec,
                        resolver_iterator_pair endpoint_range) {
     if (!ec && !boost::empty(endpoint_range)) {
-      // Here we deal with the case that there was an error encountered
-      // and
+      // Here we deal with the case that there was an error encountered and
       // that there's still more endpoints to try connecting to.
       resolver_iterator iter = boost::begin(endpoint_range);
       asio::ip::tcp::endpoint endpoint(iter->endpoint().address(), port);
@@ -198,16 +200,16 @@ struct http_async_connection
                            body_generator_function_type generator,
                            boost::system::error_code const& ec,
                            std::size_t bytes_transferred) {
+    // TODO: Maybe log the bytes transferred?
+    static_cast<void>(bytes_transferred);
     if (!is_timedout_ && !ec) {
       if (generator) {
-        // Here we write some more data that the generator provides,
-        // before
-        // we wait for data from the server.
+	// Here we write some more data that the generator provides, before we
+	// wait for data from the server.
         string_type chunk;
         if (generator(chunk)) {
-          // At this point this means we have more data to write, so we
-          // write
-          // it out.
+	  // At this point this means we have more data to write, so we write
+	  // it out.
           std::copy(chunk.begin(), chunk.end(),
                     std::ostreambuf_iterator<typename char_<Tag>::type>(
                         &command_streambuf));
@@ -277,12 +279,10 @@ struct http_async_connection
               bytes_transferred);
           if (!parsed_ok || indeterminate(parsed_ok)) return;
         case headers:
-          // In the following, remainder is the number of bytes that
-          // remain
-          // in the buffer. We need this in the body processing to make
-          // sure
-          // that the data remaining in the buffer is dealt with before
-          // another call to get more data for the body is scheduled.
+	  // In the following, remainder is the number of bytes that remain in
+	  // the buffer. We need this in the body processing to make sure that
+	  // the data remaining in the buffer is dealt with before another call
+	  // to get more data for the body is scheduled.
           fusion::tie(parsed_ok, remainder) = this->parse_headers(
               delegate_,
               request_strand_.wrap(boost::bind(
@@ -294,9 +294,8 @@ struct http_async_connection
           if (!parsed_ok || indeterminate(parsed_ok)) return;
 
           if (!get_body) {
-            // We short-circuit here because the user does not
-            // want to get the body (in the case of a HEAD
-            // request).
+	    // We short-circuit here because the user does not want to get the
+	    // body (in the case of a HEAD request).
             this->body_promise.set_value("");
             this->destination_promise.set_value("");
             this->source_promise.set_value("");
@@ -306,26 +305,23 @@ struct http_async_connection
           }
 
           if (callback) {
-            // Here we deal with the spill-over data from the
-            // headers processing. This means the headers data
-            // has already been parsed appropriately and we're
-            // looking to treat everything that remains in the
-            // buffer.
+	    // Here we deal with the spill-over data from the headers
+	    // processing. This means the headers data has already been parsed
+	    // appropriately and we're looking to treat everything that remains
+	    // in the buffer.
             typename protocol_base::buffer_type::const_iterator begin =
                 this->part_begin;
             typename protocol_base::buffer_type::const_iterator end = begin;
             std::advance(end, remainder);
 
-            // We're setting the body promise here to an empty string
-            // because
-            // this can be used as a signaling mechanism for the user to
-            // determine that the body is now ready for processing, even
-            // though the callback is already provided.
+	    // We're setting the body promise here to an empty string because
+	    // this can be used as a signaling mechanism for the user to
+	    // determine that the body is now ready for processing, even though
+	    // the callback is already provided.
             this->body_promise.set_value("");
 
-            // The invocation of the callback is synchronous to allow us
-            // to
-            // wait before scheduling another read.
+	    // The invocation of the callback is synchronous to allow us to
+	    // wait before scheduling another read.
             callback(make_iterator_range(begin, end), ec);
 
             delegate_->read_some(
@@ -336,8 +332,8 @@ struct http_async_connection
                     this_type::shared_from_this(), body, get_body, callback,
                     placeholders::error, placeholders::bytes_transferred)));
           } else {
-            // Here we handle the body data ourself and append to an
-            // ever-growing string buffer.
+	    // Here we handle the body data ourself and append to an
+	    // ever-growing string buffer.
             this->parse_body(
                 delegate_,
                 request_strand_.wrap(boost::bind(
@@ -349,23 +345,19 @@ struct http_async_connection
           return;
         case body:
           if (ec == boost::asio::error::eof || is_ssl_short_read_error) {
-            // Here we're handling the case when the connection has been
-            // closed from the server side, or at least that the end of
-            // file
-            // has been reached while reading the socket. This signals
-            // the end
-            // of the body processing chain.
+	    // Here we're handling the case when the connection has been closed
+	    // from the server side, or at least that the end of file has been
+	    // reached while reading the socket. This signals the end of the
+	    // body processing chain.
             if (callback) {
               typename protocol_base::buffer_type::const_iterator
                   begin = this->part.begin(),
                   end = begin;
               std::advance(end, bytes_transferred);
 
-              // We call the callback function synchronously passing the
-              // error
-              // condition (in this case, end of file) so that it can
-              // handle
-              // it appropriately.
+	      // We call the callback function synchronously passing the error
+	      // condition (in this case, end of file) so that it can handle it
+	      // appropriately.
               callback(make_iterator_range(begin, end), ec);
             } else {
               string_type body_string;
@@ -383,15 +375,12 @@ struct http_async_connection
             this->response_parser_.reset();
             this->timer_.cancel();
           } else {
-            // This means the connection has not been closed yet and we
-            // want
-            // to get more
-            // data.
+	    // This means the connection has not been closed yet and we want to
+	    // get more data.
             if (callback) {
-              // Here we have a body_handler callback. Let's invoke the
-              // callback from here and make sure we're getting more
-              // data
-              // right after.
+	      // Here we have a body_handler callback. Let's invoke the
+	      // callback from here and make sure we're getting more data right
+	      // after.
               typename protocol_base::buffer_type::const_iterator begin =
                   this->part.begin();
               typename protocol_base::buffer_type::const_iterator end = begin;
@@ -405,10 +394,9 @@ struct http_async_connection
                       this_type::shared_from_this(), body, get_body, callback,
                       placeholders::error, placeholders::bytes_transferred)));
             } else {
-              // Here we don't have a body callback. Let's
-              // make sure that we deal with the remainder
-              // from the headers part in case we do have data
-              // that's still in the buffer.
+	      // Here we don't have a body callback. Let's make sure that we
+	      // deal with the remainder from the headers part in case we do
+	      // have data that's still in the buffer.
               this->parse_body(
                   delegate_,
                   request_strand_.wrap(boost::bind(

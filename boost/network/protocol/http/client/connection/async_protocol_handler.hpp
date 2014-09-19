@@ -8,8 +8,23 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/asio/buffer.hpp>
+#include <boost/fusion/tuple.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/logic/tribool.hpp>
 #include <boost/network/detail/debug.hpp>
 #include <boost/network/protocol/http/algorithms/linearize.hpp>
+#include <boost/network/protocol/http/parser/incremental.hpp>
+#include <boost/network/traits/char.hpp>
+#include <boost/network/traits/ostringstream.hpp>
+#include <boost/network/protocol/http/response.hpp>
+
+#ifndef BOOST_NETWORK_CLIENT_CONNECTION_BUFFER_SIZE
+// Define a connection buffer size for asynchronous connections. We first set
+// this to 1024 which reflects the current value as of 0.11.1, but this should
+// change at a later time for efficiency reasons.
+#define BOOST_NETWORK_CLIENT_CONNECTION_BUFFER_SIZE 4096
+#endif
 
 namespace boost {
 namespace network {
@@ -45,27 +60,28 @@ struct http_async_protocol_handler {
 #endif
 
   template <class ResponseType>
-  void init_response(ResponseType& response_, bool get_body) {
-    boost::shared_future<string_type> source_future(
-        source_promise.get_future());
-    source(response_, source_future);
-    boost::shared_future<string_type> destination_future(
-        destination_promise.get_future());
-    destination(response_, destination_future);
-    boost::shared_future<typename headers_container<Tag>::type> headers_future(
-        headers_promise.get_future());
-    headers(response_, headers_future);
-    boost::shared_future<string_type> body_future(body_promise.get_future());
-    body(response_, body_future);
-    boost::shared_future<string_type> version_future(
-        version_promise.get_future());
+  void init_response(ResponseType& response_) {
+    boost::shared_future<string_type> version_future =
+        version_promise.get_future();
+    boost::shared_future<boost::uint16_t> status_future =
+        status_promise.get_future();
+    boost::shared_future<string_type> status_message_future =
+        status_message_promise.get_future();
+    boost::shared_future<typename headers_container<Tag>::type> headers_future =
+        headers_promise.get_future();
+    boost::shared_future<string_type> source_future =
+        source_promise.get_future();
+    boost::shared_future<string_type> destination_future =
+        destination_promise.get_future();
+    boost::shared_future<string_type> body_future = body_promise.get_future();
+
     version(response_, version_future);
-    boost::shared_future<boost::uint16_t> status_future(
-        status_promise.get_future());
     status(response_, status_future);
-    boost::shared_future<string_type> status_message_future(
-        status_message_promise.get_future());
     status_message(response_, status_message_future);
+    source(response_, source_future);
+    destination(response_, destination_future);
+    headers(response_, headers_future);
+    body(response_, body_future);
   }
 
   struct to_http_headers {
@@ -318,8 +334,8 @@ struct http_async_protocol_handler {
   }
 
   typedef response_parser<Tag> response_parser_type;
-  // TODO: make 1024 go away and become a configurable value.
-  typedef boost::array<typename char_<Tag>::type, 1024> buffer_type;
+  typedef boost::array<typename char_<Tag>::type,
+                       BOOST_NETWORK_CLIENT_CONNECTION_BUFFER_SIZE> buffer_type;
 
   response_parser_type response_parser_;
   boost::promise<string_type> version_promise;

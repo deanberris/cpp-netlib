@@ -34,7 +34,8 @@ template <class Tag, class T>
 void body(basic_response<Tag> &response, T const &future, mpl::true_ const &) {
   response.body(future);
 }
-}
+
+}  // namespace impl
 
 template <class Tag, class T>
 inline void body(basic_response<Tag> &response, T const &value) {

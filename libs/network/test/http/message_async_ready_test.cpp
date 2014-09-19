@@ -46,21 +46,20 @@ struct ready_callback {
 BOOST_AUTO_TEST_CASE_TEMPLATE(when_ready_valid_response_test, client,
                               async_only_client_types) {
   client http_client;
-  util::thread_pool threads(1);
   typename client::request request("http://www.google.com");
   typename client::response response;
+  util::thread_pool threads(1);
   BOOST_REQUIRE_NO_THROW(response = http_client.get(request));
   when_ready(response, ready_callback(), threads);
-  // await(response);  // block!
+  await(response);  // block!
 }
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(when_ready_valid_response_nothreadpool_test,
                               client, async_only_client_types) {
   client http_client;
   typename client::request request("http://www.google.com");
-  typename client::response response;
-  BOOST_REQUIRE_NO_THROW(response = http_client.get(request));
+  typename client::response response = http_client.get(request);
   when_ready(response, ready_callback());
-  // await(response);  // block!
+  await(response);  // block!
 }
 #endif

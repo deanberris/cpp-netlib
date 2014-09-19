@@ -34,6 +34,7 @@
 #include <boost/network/protocol/http/message/wrappers/ready.hpp>
 #ifdef BOOST_NETWORK_ENABLE_WHEN_READY
 #include <boost/network/protocol/http/message/wrappers/when_ready.hpp>
+#include <boost/network/protocol/http/message/wrappers/await.hpp>
 #endif  // BOOST_NETWORK_ENABLE_WHEN_READY
 
 #include <boost/network/protocol/http/message.hpp>

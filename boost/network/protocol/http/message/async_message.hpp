@@ -56,13 +56,13 @@ struct async_message {
         headers_(other.headers_),
         body_(other.body_) {}
 
-  string_type const status_message() const { return status_message_.get(); }
+  string_type status_message() const { return status_message_.get(); }
 
-  void status_message(boost::shared_future<string_type> const& future) const {
+  void status_message(boost::shared_future<string_type> const& future) {
     status_message_ = future;
   }
 
-  string_type const version() const { return version_.get(); }
+  string_type version() const { return version_.get(); }
 
   void version(boost::shared_future<string_type> const& future) const {
     version_ = future;
@@ -70,19 +70,19 @@ struct async_message {
 
   boost::uint16_t status() const { return status_.get(); }
 
-  void status(boost::shared_future<uint16_t> const& future) const {
+  void status(boost::shared_future<uint16_t> const& future) {
     status_ = future;
   }
 
-  string_type const source() const { return source_.get(); }
+  string_type source() const { return source_.get(); }
 
-  void source(boost::shared_future<string_type> const& future) const {
+  void source(boost::shared_future<string_type> const& future) {
     source_ = future;
   }
 
-  string_type const destination() const { return destination_.get(); }
+  string_type destination() const { return destination_.get(); }
 
-  void destination(boost::shared_future<string_type> const& future) const {
+  void destination(boost::shared_future<string_type> const& future) {
     destination_ = future;
   }
 
@@ -97,35 +97,31 @@ struct async_message {
     return *retrieved_headers_;
   }
 
-  void headers(boost::shared_future<headers_container_type> const& future)
-      const {
+  void headers(boost::shared_future<headers_container_type> const& future) {
     headers_ = future;
   }
 
-  void add_header(typename headers_container_type::value_type const& pair_)
-      const {
+  void add_header(typename headers_container_type::value_type const& pair_) {
     added_headers.insert(added_headers.end(), pair_);
   }
 
-  void remove_header(typename headers_container_type::key_type const& key_)
-      const {
+  void remove_header(typename headers_container_type::key_type const& key_) {
     removed_headers.insert(key_);
   }
 
-  string_type const body() const { return body_.get(); }
+  string_type body() const { return body_.get(); }
 
-  void body(boost::shared_future<string_type> const& future) const {
-    body_ = future;
-  }
+  void body(boost::shared_future<string_type> const& future) { body_ = future; }
 
   void swap(async_message& other) {
-    std::swap(status_message_, other.status_message_);
-    std::swap(status_, other.status_);
-    std::swap(version_, other.version_);
-    std::swap(source_, other.source_);
-    std::swap(destination_, other.destination_);
-    std::swap(headers_, other.headers_);
-    std::swap(body_, other.body_);
+    using std::swap;
+    swap(status_message_, other.status_message_);
+    swap(version_, other.version_);
+    swap(source_, other.source_);
+    swap(destination_, other.destination_);
+    swap(status_, other.status_);
+    swap(headers_, other.headers_);
+    swap(body_, other.body_);
   }
 
   async_message& operator=(async_message other) {
@@ -134,13 +130,15 @@ struct async_message {
   }
 
  private:
-  mutable boost::shared_future<string_type> status_message_, version_, source_,
-      destination_;
+  mutable boost::shared_future<string_type> status_message_;
+  mutable boost::shared_future<string_type> version_;
+  mutable boost::shared_future<string_type> source_;
+  mutable boost::shared_future<string_type> destination_;
   mutable boost::shared_future<boost::uint16_t> status_;
   mutable boost::shared_future<headers_container_type> headers_;
-  mutable headers_container_type added_headers;
-  mutable std::set<string_type> removed_headers;
   mutable boost::shared_future<string_type> body_;
+  headers_container_type added_headers;
+  std::set<string_type> removed_headers;
   mutable boost::optional<headers_container_type> retrieved_headers_;
 
   friend struct boost::network::http::impl::ready_wrapper<Tag>;
@@ -148,6 +146,9 @@ struct async_message {
 #ifdef BOOST_NETWORK_ENABLE_WHEN_READY
   template <class, class>
   friend struct boost::network::http::impl::when_ready_wrapper;
+
+  template <class T>
+  friend void await(async_message<T>&);
 #endif
 };
 
