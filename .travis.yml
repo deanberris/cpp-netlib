@@ -1,3 +1,4 @@
+sudo: false
 language:
     - cpp
 
@@ -22,32 +23,44 @@ env:
     - BOOST_VER=1.55.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
     - BOOST_VER=1.55.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
     - BOOST_VER=1.55.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.56.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.56.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.56.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.56.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.57.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.57.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.57.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.57.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
+    - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
 
 before_install:
-    - if [ "${CXX}" == "g++" ] || [ ${BUILD_SHARED_LIBS} = "OFF" ]; then
-        sudo add-apt-repository ppa:boost-latest/ppa --yes;
-        sudo apt-get update;
-      fi
-    - if [ "${CXX}" == "clang++" ] && [ ${BUILD_SHARED_LIBS} = "ON" ]; then
-        svn export http://svn.boost.org/svn/boost/tags/release/Boost_${BOOST_VER//./_} ../boost_${BOOST_VER//./_};
-        export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_};
-      fi
+    - git clone --recursive https://github.com/boostorg/boost.git ../boost_${BOOST_VER//./_}
+    - cd ../boost_${BOOST_VER//./_}
+    - git checkout boost-${BOOST_VER}
+    - cd -
+    - export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_}
 
 install:
-    - if [ "${CXX}" == "g++" ] || [ ${BUILD_SHARED_LIBS} = "OFF" ]; then
-        sudo apt-get install libboost${BOOST_VER/%.0/}-all-dev;
-      fi
-    - if [ "${CXX}" == "clang++" ] && [ ${BUILD_SHARED_LIBS} = "ON" ]; then
-        cd $BOOST_ROOT;
-        ./bootstrap.sh --with-toolset=$CC;
-        ./b2 -j4 --stagedir=.;
-        cd -;
-      fi
+    - cd $BOOST_ROOT
+    - ./bootstrap.sh --with-toolset=$CC
+    - ./b2 headers
+    - ./b2 --stagedir=.
+    - cd -
+
+cache:
+    directories:
+      - $BOOST_ROOT
 
 script:
+    - mkdir ../build
+    - cd ../build
     - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
             -DCPP-NETLIB_ENABLE_HTTPS=${ENABLE_HTTPS}
+            $TRAVIS_BUILD_DIR
     - make
     - make test
 
