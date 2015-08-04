@@ -27,9 +27,9 @@ env:
 before_install:
     - git clone --recursive https://github.com/boostorg/boost.git ../boost_${BOOST_VER//./_}
     - cd ../boost_${BOOST_VER//./_}
-    - git submodule update --init
-    - git checkout boost-${BOOST_VER}
-    - git submodule update
+    - git submodule update --init --force
+    - git checkout --force boost-${BOOST_VER}
+    - git submodule update --force
     - cd -
     - export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_}
 
