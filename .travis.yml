@@ -27,6 +27,7 @@ env:
 before_install:
     - git clone --recursive https://github.com/boostorg/boost.git ../boost_${BOOST_VER//./_}
     - cd ../boost_${BOOST_VER//./_}
+    - git submodule update --init
     - git checkout boost-${BOOST_VER}
     - git submodule update
     - cd -
