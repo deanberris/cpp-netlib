@@ -45,9 +45,9 @@ before_install:
 
 install:
     - cd $BOOST_ROOT
-    - ./bootstrap.sh --with-toolset=$CC
+    - sh -x ./bootstrap.sh --with-toolset=$CC --ignore-site-config
     - ./b2 headers
-    - ./b2 --stagedir=.
+    - ./b2
     - cd -
 
 cache:
