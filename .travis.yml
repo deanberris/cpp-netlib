@@ -35,7 +35,7 @@ before_install:
 install:
     - cd $BOOST_ROOT
     - sh -x ./bootstrap.sh --with-toolset=$CC
-    - ./b2 --stagedir=. -j2 --build-type=complete
+    - ./b2 --stagedir=. -j2 --build-type=complete --layout=tagged
     - cd -
 
 cache:
