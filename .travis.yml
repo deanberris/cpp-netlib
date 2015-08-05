@@ -28,7 +28,7 @@ before_install:
     - wget -O ../boost_${BOOST_VER//./_}.tar.bz2 http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/boost_${BOOST_VER//./_}.tar.bz2/download
     - cd ..
     - tar jxf boost_${BOOST_VER//./_}.tar.bz2
-    - cd ../boost_${BOOST_VER//./_}
+    - cd boost_${BOOST_VER//./_}
     - export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_}
     - cd $TRAVIS_BUILD_DIR
 
