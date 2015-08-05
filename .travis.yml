@@ -25,13 +25,12 @@ env:
     - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
 
 before_install:
-    - git clone --recursive https://github.com/boostorg/boost.git ../boost_${BOOST_VER//./_}
+    - cd ..
+    - wget https://github.com/boostorg/boost/archive/boost-${BOOST_VER}.tar.gz
+    - tar zxf boost-${BOOST_VER}
     - cd ../boost_${BOOST_VER//./_}
-    - git submodule update --init --force
-    - git checkout --force boost-${BOOST_VER}
-    - git submodule update --force
-    - cd -
     - export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_}
+    - cd $TRAVIS_BUILD_DIR
 
 install:
     - cd $BOOST_ROOT
