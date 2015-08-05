@@ -35,7 +35,7 @@ before_install:
 install:
     - cd $BOOST_ROOT
     - sh -x ./bootstrap.sh --with-toolset=$CC
-    - ./b2 --stagedir=. -j2 --build-type=complete --layout=tagged
+    - ./b2 --stagedir=. -j2 --build-type=complete --layout=tagged cxxflags='-std=c++11'
     - cd -
 
 cache:
@@ -48,9 +48,20 @@ script:
     - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
             -DCPP-NETLIB_ENABLE_HTTPS=${ENABLE_HTTPS}
+            -DCMAKE_CXX_FLAGS='-std=c++11'
             $TRAVIS_BUILD_DIR
     - make -j2
     - make test
 
 after_failure:
     - cat Testing/Temporary/LastTest.log 
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise
+    packages:
+    - gcc-4.8
+    - g++-4.8
+    - clang-3.5
