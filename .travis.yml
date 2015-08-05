@@ -35,7 +35,7 @@ before_install:
 install:
     - cd $BOOST_ROOT
     - sh -x ./bootstrap.sh --with-toolset=$CC
-    - ./b2 --stagedir=.
+    - ./b2 --stagedir=. -j2
     - cd -
 
 cache:
@@ -49,7 +49,7 @@ script:
             -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
             -DCPP-NETLIB_ENABLE_HTTPS=${ENABLE_HTTPS}
             $TRAVIS_BUILD_DIR
-    - make
+    - make -j2
     - make test
 
 after_failure:
