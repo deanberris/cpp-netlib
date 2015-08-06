@@ -25,15 +25,15 @@ env:
 
 before_install:
     - if [ "${CXX}" = "g++" ]; then
-        export CXX="g++-4.8"
-        export CC="gcc-4.8"
+          export CXX="g++-4.8";
+          export CC="gcc-4.8";
       fi
     - if [ "${CXX}" = "clang++"]; then
-        export CXX="clang++-3.7"
-        export CC="clang-3.7"
+          export CXX="clang++-3.7";
+          export CC="clang-3.7";
       fi
-    - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
     - ./install-boost.sh
+    - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 cache:
     directories:
