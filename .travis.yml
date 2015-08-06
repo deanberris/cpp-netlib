@@ -27,6 +27,10 @@ before_install:
     - ./install-boost.sh
 
 install:
+    - if [ "${CXX}" = "g++" ]; then
+        export CXX="g++-4.8"
+        export CC="gcc-4.8"
+      fi
     - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 cache:
@@ -48,4 +52,4 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
-    - clang-3.7
+    - clang
