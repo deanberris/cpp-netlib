@@ -25,7 +25,9 @@ env:
 
 before_install:
     - pwd
-    - sh -x install-boost.sh
+    - ./install-boost.sh
+
+install:
     - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 cache:
