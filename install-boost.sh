@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-BOOST_VERSION=${BOOST_VER//./_}
+BOOST_VERSION=${BOOST_VER/./_}
 
 if [ ! -d "${$HOME}/${CC}-boost_${BOOST_VERSION}" ]; then
   wget -O boost_${BOOST_VERSION}.tar.bz2 http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/boost_${BOOST_VERSION}.tar.bz2/download
