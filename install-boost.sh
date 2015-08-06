@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-if [ ! -d "${HOME}/${CC}-boost_${BOOST_VERSION}" ]; then
+BOOST_FILES="`ls ${HOME}/${CC}-boost_${BOOST_VERSION}/include`"
+if [ -z "$BOOST_FILES" ]; then
   wget -O boost_${BOOST_VERSION}.tar.bz2 http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/boost_${BOOST_VERSION}.tar.bz2/download
   tar jxf boost_${BOOST_VERSION}.tar.bz2
   cd boost_${BOOST_VERSION}
