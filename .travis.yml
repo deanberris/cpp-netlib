@@ -1,9 +1,8 @@
 sudo: false
-language:
-    - cpp
+language: cpp
 
 compiler:
-    - gcc
+    - g++
     - clang
 
 env:
@@ -24,34 +23,16 @@ env:
     - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
     - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
 
-before_install:
-    - wget -O ../boost_${BOOST_VER//./_}.tar.bz2 http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/boost_${BOOST_VER//./_}.tar.bz2/download
-    - cd ..
-    - tar jxf boost_${BOOST_VER//./_}.tar.bz2
-    - cd boost_${BOOST_VER//./_}
-    - export BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost_${BOOST_VER//./_}
-    - cd $TRAVIS_BUILD_DIR
-
 install:
-    - cd $BOOST_ROOT
-    - sh -x ./bootstrap.sh --with-toolset=$CC
-    - ./b2 --stagedir=. -j2 --build-type=complete --layout=tagged cxxflags='-std=c++11'
-    - cd -
+    - sh -x install-boost.sh
+    - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 cache:
     directories:
-      - $BOOST_ROOT
+    - ${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 script:
-    - mkdir ../build
-    - cd ../build
-    - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-            -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
-            -DCPP-NETLIB_ENABLE_HTTPS=${ENABLE_HTTPS}
-            -DCMAKE_CXX_FLAGS='-std=c++11'
-            $TRAVIS_BUILD_DIR
-    - make -j2
-    - make test
+    - sh -x build.sh
 
 after_failure:
     - cat Testing/Temporary/LastTest.log 
@@ -64,4 +45,4 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
-    - clang-3.5
+    - clang-3.8
