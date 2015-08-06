@@ -30,7 +30,7 @@ before_install:
           ln -s `which g++-4.8` ${HOME}/bin/g++;
           ln -s `which gcc-4.8` ${HOME}/bin/gcc;
       fi
-    - if [ "${CXX}" = "clang++"]; then
+    - if [ "${CXX}" = "clang" ]; then
           export TOOLSET="clang";
           ln -s `which clang-3.5` ${HOME}/bin/clang;
       fi
