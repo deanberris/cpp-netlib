@@ -23,7 +23,8 @@ env:
     - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
     - BOOST_VER=1.58.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF"
 
-install:
+before_install:
+    - pwd
     - sh -x install-boost.sh
     - export BOOST_ROOT=${HOME}/${CC}-boost_${BOOST_VER//./_}
 
@@ -32,6 +33,7 @@ cache:
     - ${HOME}/${CC}-boost_${BOOST_VER//./_}
 
 script:
+    - pwd
     - sh -x build.sh
 
 after_failure:
