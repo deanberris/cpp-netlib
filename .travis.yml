@@ -1,23 +1,23 @@
 sudo: false
 language: cpp
 compiler:
-- g++
-- clang
+  - g++
+  - clang
 env:
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="ON" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Release" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="OFF" Uri_BUILD_TESTS=OFF Uri_DISABLE_LIBCXX=YES
 # Support the sanitizers in clang only
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=thread"
-- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=address"
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=thread"
+  - BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=address"
 # TODO(deanberris): It seems Boost is not msan-clean yet; report bugs and maybe fix?
 #- BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins=2"
- matrix:
+  matrix:
    exclude:
      - compiler: g++
        env: BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=thread"
@@ -27,23 +27,23 @@ env:
 #    - compiler: g++
 #      env: BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins=2"
 script:
-- pwd
-- sh -x build.sh
+  - pwd
+  - sh -x build.sh
 after_failure:
-- cat build/Testing/Temporary/LastTest.log
+  - cat build/Testing/Temporary/LastTest.log
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.8
-    - kalakris-cmake
-    - precise
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.8
+      - kalakris-cmake
+      - precise
     packages:
-    - gcc-4.8
-    - g++-4.8
-    - clang-3.8
-    - cmake
-    - libboost1.62-all-dev
+      - gcc-4.8
+      - g++-4.8
+      - clang-3.8
+      - cmake
+      - libboost1.62-all-dev
 notifications:
   slack:
     secure: Y7lLjqZ83+b/jaJ5+EKwvgCDeERi4bVbDn9tLp8sieTdu+ENsPI+JmLYSXZXPpe7JrItrXW6uJJXN2wG1h7au4mpVVTghd31HBzuzrqVxDphWPhp16NYzvbAgQQRBXvFVvfSdW/Kb/n2fX6xDApY0t6vNREb/GKg0GyzESb4ZjU=

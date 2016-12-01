@@ -15,6 +15,6 @@ cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE \
   -DBOOST_LIBRARYDIR="${HOME}/${CC}-boost_${BOOST_VERSION}/lib" \
   -DCMAKE_CXX_FLAGS="-std=c++11 ${CMAKE_CXX_FLAGS}" \
   ..
-make -j8
+make -j
 make test
 cd ..
