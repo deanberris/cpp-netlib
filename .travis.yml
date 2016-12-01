@@ -40,8 +40,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise-3.8
-    - kalakris-cmake
-    - precise
+    - george-edison55-precise-backports
     packages:
     - gcc-4.8
     - g++-4.8
