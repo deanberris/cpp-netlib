@@ -345,7 +345,7 @@ struct async_connection
   }
 
  private:
-  typedef boost::array<char, BOOST_NETWORK_HTTP_SERVER_CONNECTION_BUFFER_SIZE>
+  typedef std::array<char, BOOST_NETWORK_HTTP_SERVER_CONNECTION_BUFFER_SIZE>
       buffer_type;
 
  public:
