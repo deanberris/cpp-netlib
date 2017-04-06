@@ -103,6 +103,10 @@ elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
     # Use libc++ only in OS X.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++")
+  elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    # Use libstdc++ for Linux.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++")
   endif()
 endif()
 
