@@ -140,6 +140,13 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 endif()
 
+# See whether we can find the ccache program -- if we can, then use it for the build.
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
 enable_testing()
 
 install(DIRECTORY boost DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
