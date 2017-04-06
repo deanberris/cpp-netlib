@@ -40,7 +40,7 @@ install:
 - if [ "${CC}" = "clang" ]; then
   export CXX=clang++-3.8;
   export CC=clang-3.8;
-  export CCACHE_CPP2=yes
+  export CCACHE_CPP2=yes;
   fi
 before_script:
 - echo ${CXX}
