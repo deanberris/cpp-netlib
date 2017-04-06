@@ -47,7 +47,7 @@ install:
   ln -s `which clang++-3.8` ${CUR_DIR}/bin/clang++;
   ${CUR_DIR}/bin/clang --version;
   export CXX=${CUR_DIR}/bin/clang++;
-  export CC=${CUR_DIR}/bin/clang++;
+  export CC=${CUR_DIR}/bin/clang;
   fi
 before_script:
 - export PATH=${CUR_DIR}/bin:${PATH}
