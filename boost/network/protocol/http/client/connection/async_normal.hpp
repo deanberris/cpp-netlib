@@ -187,7 +187,7 @@ struct http_async_connection
                                                           callback, generator, ec, endpoint_range);
                                   }));
     if (timeout_ > 0) {
-      timer_.expires_from_now(std::chrono::seconds(timeout_));
+      timer_.expires_from_now(boost::chrono::seconds(timeout_));
       timer_.async_wait(request_strand_.wrap([=] (boost::system::error_code const &ec) {
             self->handle_timeout(ec);
           }));
