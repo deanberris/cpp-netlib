@@ -50,6 +50,7 @@ install:
   fi
 before_script:
 - export PATH=${CUR_DIR}/bin:${PATH}
+- export CCACHE_CPP2=yes
 - "${CXX} --version"
 - "${CC} --version"
 script:
@@ -69,7 +70,6 @@ addons:
       - libboost1.55-all-dev
       - gcc-4.9
       - g++-4.9
-      - ccache
       - clang-3.8
       - cmake
       - cmake-data
