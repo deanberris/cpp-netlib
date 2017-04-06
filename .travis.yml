@@ -50,7 +50,6 @@ before_script:
 - export PATH=${CUR_DIR}/bin:${PATH}
 - "${CXX} --version"
 - "${CC} --version"
-cache: ccache
 script:
 - pwd
 - sh -x build.sh
