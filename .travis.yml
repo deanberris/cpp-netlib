@@ -28,13 +28,19 @@ env:
 #      env: BOOST_VER=1.59.0 BUILD_SHARED_LIBS="OFF" CMAKE_BUILD_TYPE="Debug" ENABLE_HTTPS="ON" CMAKE_CXX_FLAGS="-fsanitize=memory -fsanitize-memory-track-origins=2"
 install:
 - mkdir -p ${HOME}/bin
-- if [ "${CC}" = "gcc" ]; then export TOOLSET="gcc"; ln -s `which g++-4.9` ${HOME}/bin/g++;
-  ln -s `which gcc-4.9` ${HOME}/bin/gcc; fi
-- if [ "${CC}" = "clang" ]; then export TOOLSET="clang"; ln -s `which clang-3.6` ${HOME}/bin/clang;
-  ln -s `which clang++-3.6` ${HOME}/bin/clang++; fi
-- export BOOST_VERSION=${BOOST_VER//./_}
+- if [ "${CC}" = "gcc" ]; then ln -s `which g++-4.9` ${HOME}/bin/g++;
+  ln -s `which gcc-4.9` ${HOME}/bin/gcc; $HOME/bin/g++ --version;
+  export CXX=$HOME/bin/g++;
+  export CC=$HOME/bin/gcc;
+  fi
+- if [ "${CC}" = "clang" ]; then ln -s `which clang-3.6` ${HOME}/bin/clang;
+  ln -s `which clang++-3.6` ${HOME}/bin/clang++; $HOME/bin/clang --version;
+  export CXX=$HOME/bin/clang++;
+  export CC=$HOME/bin/clang++;
+  fi
 - export PATH=${HOME}/bin:${PATH}
 - "${CXX} --version"
+- "${CC} --version"
 cache: ccache
 script:
 - pwd
