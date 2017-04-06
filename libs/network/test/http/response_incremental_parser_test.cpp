@@ -100,7 +100,7 @@ TEST(IncrementalResponseParserTest, ParseHTTPVersion) {
   parsed_ok = logic::indeterminate;
   std::tie(parsed_ok, result_range) = p.parse_until(
       response_parser_type::http_version_done, invalid_http_version);
-  EXPECT_EQ(false, parsed_ok);
+  EXPECT_FALSE(parsed_ok);
   parsed.assign(std::begin(result_range), std::end(result_range));
   std::cout << "PARSED: " << parsed << " state=" << p.state() << std::endl;
 
