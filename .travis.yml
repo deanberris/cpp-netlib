@@ -33,11 +33,11 @@ install:
 - pwd
 - export CUR_DIR=`pwd`
 - mkdir -p ${CUR_DIR}/bin
-- if [ "${CC}" = "gcc" ];
+- if [ "${CC}" = "gcc" ]; then
   export CXX=g++-4.9;
   export CC=gcc-4.9;
   fi
-- if [ "${CC}" = "clang" ];
+- if [ "${CC}" = "clang" ]; then
   export CXX=clang++-3.8;
   export CC=clang-3.8;
   export CCACHE_CPP2=yes
